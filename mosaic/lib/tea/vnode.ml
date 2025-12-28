@@ -128,6 +128,7 @@ type 'a props = {
   z_index : int;
   live : bool;
   buffer : Renderable.Props.buffer_mode;
+  focus : bool;
   handlers : 'a handlers;
   ref : (Renderable.t -> unit) option;
   spec : 'a spec;
@@ -155,6 +156,7 @@ let raw node = Raw node
 let box ?id ?key
     (* Host props *)
     ?(visible = true) ?(z_index = 0) ?(live = false) ?(buffer = `None)
+    ?(focus = false)
     (* Ref *)
     ?ref
     (* Handlers *)
@@ -194,7 +196,7 @@ let box ?id ?key
   in
   let spec = Box_spec box_props in
   let props =
-    { id; style; visible; z_index; live; buffer; handlers; ref; spec }
+    { id; style; visible; z_index; live; buffer; focus; handlers; ref; spec }
   in
   Element { tag = Box; key; props; children }
 
@@ -236,7 +238,7 @@ let text ?id ?key
   in
   let spec = Text_spec text_props in
   let props =
-    { id; style; visible; z_index; live; buffer; handlers; ref; spec }
+    { id; style; visible; z_index; live; buffer; focus = false; handlers; ref; spec }
   in
   Element { tag = Text; key; props; children = [] }
 
@@ -278,7 +280,7 @@ let canvas ?id ?key
   in
   let spec = Canvas_spec { props = canvas_props; draw; on_resize } in
   let props =
-    { id; style; visible; z_index; live; buffer; handlers; ref; spec }
+    { id; style; visible; z_index; live; buffer; focus = false; handlers; ref; spec }
   in
   Element { tag = Canvas; key; props; children = [] }
 
@@ -329,7 +331,7 @@ let table ?id ?key
   in
   let spec = Table_spec table_props in
   let props =
-    { id; style; visible; z_index; live; buffer; handlers; ref; spec }
+    { id; style; visible; z_index; live; buffer; focus = false; handlers; ref; spec }
   in
   Element { tag = Table; key; props; children = [] }
 
@@ -371,7 +373,7 @@ let slider ?id ?key
   in
   let spec = Slider_spec { slider_props; slider_on_change = on_change } in
   let props =
-    { id; style; visible; z_index; live; buffer; handlers; ref; spec }
+    { id; style; visible; z_index; live; buffer; focus = false; handlers; ref; spec }
   in
   Element { tag = Slider; key; props; children = [] }
 
@@ -426,7 +428,7 @@ let select ?id ?key
       }
   in
   let props =
-    { id; style; visible; z_index; live; buffer; handlers; ref; spec }
+    { id; style; visible; z_index; live; buffer; focus = false; handlers; ref; spec }
   in
   Element { tag = Select; key; props; children = [] }
 
@@ -467,7 +469,7 @@ let spinner ?id ?key
          ?background:spinner_background ())
   in
   let props =
-    { id; style; visible; z_index; live; buffer; handlers; ref; spec }
+    { id; style; visible; z_index; live; buffer; focus = false; handlers; ref; spec }
   in
   Element { tag = Spinner; key; props; children = [] }
 
@@ -523,7 +525,7 @@ let tab_select ?id ?key
       }
   in
   let props =
-    { id; style; visible; z_index; live; buffer; handlers; ref; spec }
+    { id; style; visible; z_index; live; buffer; focus = false; handlers; ref; spec }
   in
   Element { tag = Tab_select; key; props; children = [] }
 
@@ -567,7 +569,7 @@ let scroll_bar ?id ?key
     Scroll_bar_spec { scroll_bar_props; scroll_bar_on_change = on_change }
   in
   let props =
-    { id; style; visible; z_index; live; buffer; handlers; ref; spec }
+    { id; style; visible; z_index; live; buffer; focus = false; handlers; ref; spec }
   in
   Element { tag = Scroll_bar; key; props; children = [] }
 
@@ -611,7 +613,7 @@ let scroll_box ?id ?key
     Scroll_box_spec { scroll_box_props; scroll_box_on_scroll = on_scroll }
   in
   let props =
-    { id; style; visible; z_index; live; buffer; handlers; ref; spec }
+    { id; style; visible; z_index; live; buffer; focus = false; handlers; ref; spec }
   in
   Element { tag = Scroll_box; key; props; children }
 
@@ -663,7 +665,7 @@ let input ?id ?key
       }
   in
   let props =
-    { id; style; visible; z_index; live; buffer; handlers; ref; spec }
+    { id; style; visible; z_index; live; buffer; focus = false; handlers; ref; spec }
   in
   Element { tag = Text_input; key; props; children = [] }
 
@@ -707,7 +709,7 @@ let code ?id ?key
   in
   let spec = Code_spec code_props in
   let props =
-    { id; style; visible; z_index; live; buffer; handlers; ref; spec }
+    { id; style; visible; z_index; live; buffer; focus = false; handlers; ref; spec }
   in
   Element { tag = Code; key; props; children = [] }
 
@@ -751,7 +753,7 @@ let markdown ?id ?key
   in
   let spec = Markdown_spec markdown_props in
   let props =
-    { id; style; visible; z_index; live; buffer; handlers; ref; spec }
+    { id; style; visible; z_index; live; buffer; focus = false; handlers; ref; spec }
   in
   Element { tag = Markdown; key; props; children = [] }
 

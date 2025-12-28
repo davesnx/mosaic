@@ -66,8 +66,10 @@ let create_instance (renderer : Renderer.t) (tag : Vnode.tag)
              | Renderable.Layout_error e -> Toffee.Error.to_string e
              | Renderable.Tree_mismatch -> "tree mismatch"))
   in
-  (* Apply style *)
   ignore (Renderable.set_style node props.style);
+  if props.focus then (
+    Renderable.set_focusable node true;
+    ignore (Renderable.focus node));
   (* Mount the appropriate widget based on tag *)
   match (tag, props.spec) with
   | Vnode.Box, Vnode.Box_spec spec ->
@@ -140,6 +142,10 @@ let update_common_props (node : Renderable.t) ~(old_props : unit Vnode.props)
     changed := true);
   if old_props.live <> new_props.live then (
     Renderable.set_live node new_props.live;
+    changed := true);
+  if (not old_props.focus) && new_props.focus then (
+    Renderable.set_focusable node true;
+    ignore (Renderable.focus node);
     changed := true);
   if old_props.style <> new_props.style then (
     ignore (Renderable.set_style node new_props.style);

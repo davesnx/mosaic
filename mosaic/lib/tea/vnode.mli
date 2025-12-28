@@ -105,6 +105,7 @@ type 'a props = {
   z_index : int;
   live : bool;
   buffer : Mosaic_ui.Renderable.Props.buffer_mode;
+  focus : bool;
   handlers : 'a handlers;
   ref : (Mosaic_ui.Renderable.t -> unit) option;
   spec : 'a spec;
@@ -157,6 +158,7 @@ val box :
   ?z_index:int ->
   ?live:bool ->
   ?buffer:Mosaic_ui.Renderable.Props.buffer_mode ->
+  ?focus:bool ->
   ?ref:(Mosaic_ui.Renderable.t -> unit) ->
   ?on_mouse:(Mosaic_ui.Event.mouse -> 'a) ->
   ?on_key:(Mosaic_ui.Event.key -> 'a) ->

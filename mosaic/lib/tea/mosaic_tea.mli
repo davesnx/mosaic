@@ -238,6 +238,7 @@ val box :
   ?z_index:int ->
   ?live:bool ->
   ?buffer:Mosaic_ui.Renderable.Props.buffer_mode ->
+  ?focus:bool ->
   ?ref:(Mosaic_ui.Renderable.t -> unit) ->
   ?on_mouse:(Event.mouse -> 'msg option) ->
   ?on_key:(Event.key -> 'msg option) ->
