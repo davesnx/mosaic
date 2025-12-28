@@ -82,6 +82,7 @@ type t = {
   mutable wheel_acc_x : float;
   mutable wheel_acc_y : float;
   mutable live_claimed : bool;
+  mutable last_focused_child : int option;
 }
 
 let clamp v ~min ~max = if v < min then min else if v > max then max else v
@@ -108,6 +109,12 @@ let update_visible_children_selector t =
   else Renderable.set_visible_children_selector t.content None
 
 let request t = Renderable.request_render t.node
+
+let rec find_focused_descendant (node : Renderable.t) : Renderable.t option =
+  if Renderable.focused node then Some node
+  else
+    let children = Renderable.children node in
+    List.find_map find_focused_descendant children
 
 type axis = Horizontal | Vertical
 
@@ -389,6 +396,30 @@ let scroll_to ?x ?y ?(manual = true) t =
 let scroll_by ?x ?y ?(manual = true) t =
   let dx = Option.value ~default:0 x and dy = Option.value ~default:0 y in
   scroll_to ~x:(t.scroll_x + dx) ~y:(t.scroll_y + dy) ~manual t
+
+let scroll_into_view ?(align = `Nearest) ?(manual = false) t (child : Renderable.t)
+    =
+  let viewport_y = Renderable.y t.viewport in
+  let viewport_h = Renderable.height t.viewport in
+  let child_y = Renderable.y child in
+  let child_h = Renderable.height child in
+  (* Convert screen coordinates to content coordinates by adding scroll offset *)
+  let child_top_in_content = child_y - viewport_y + t.scroll_y in
+  let child_bottom_in_content = child_top_in_content + child_h in
+  let visible_top = t.scroll_y in
+  let visible_bottom = t.scroll_y + viewport_h in
+  let target_y =
+    match align with
+    | `Start -> child_top_in_content
+    | `End -> child_bottom_in_content - viewport_h
+    | `Center -> child_top_in_content - ((viewport_h - child_h) / 2)
+    | `Nearest ->
+        if child_top_in_content < visible_top then child_top_in_content
+        else if child_bottom_in_content > visible_bottom then
+          child_bottom_in_content - viewport_h
+        else t.scroll_y
+  in
+  scroll_to ~y:target_y ~manual t
 
 let remap_scroll_direction direction shift =
   if not shift then direction
@@ -786,6 +817,7 @@ let mount ?(props = Props.default) ?renderer node =
       wheel_acc_x = 0.;
       wheel_acc_y = 0.;
       live_claimed = false;
+      last_focused_child = None;
     }
   in
   bind_scroll_bars t ~horizontal:hbar ~vertical:vbar ();
@@ -811,6 +843,21 @@ let mount ?(props = Props.default) ?renderer node =
   Renderable.set_on_size_change viewport (Some (fun _ -> request t));
   Renderable.set_on_size_change content (Some (fun _ -> request t));
   Renderable.set_render node (render_scrollbox t);
+  Renderable.set_on_frame node
+    (Some
+       (fun _ ~delta:_ ->
+         match find_focused_descendant t.content with
+         | Some focused_child ->
+             let focused_id = Renderable.Internal.number focused_child in
+             let is_new_focus =
+               match t.last_focused_child with
+               | Some last_id -> last_id <> focused_id
+               | None -> true
+             in
+             if is_new_focus then (
+               t.last_focused_child <- Some focused_id;
+               scroll_into_view ~manual:false t focused_child)
+         | None -> t.last_focused_child <- None));
   (* Initial sticky start application if requested *)
   (match (props.sticky_scroll, props.sticky_start) with
   | true, Some `Top -> t.sticky_top <- true
