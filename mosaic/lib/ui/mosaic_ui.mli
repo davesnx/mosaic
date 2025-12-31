@@ -83,6 +83,9 @@ module Scroll_box = Scroll_box
 module Text_input = Text_input
 (** @inline *)
 
+module Textarea = Textarea
+(** @inline *)
+
 module Code = Code
 (** @inline *)
 

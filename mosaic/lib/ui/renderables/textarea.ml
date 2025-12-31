@@ -58,7 +58,7 @@ module Props = struct
       cursor_style;
       cursor_blinking;
       max_length;
-      max_rows;
+      max_rows = Option.value max_rows ~default:None;
       wrap_mode;
       value;
       autofocus;
@@ -463,7 +463,7 @@ let commit_value t =
 
 (* Move cursor up one line, preserving column hint *)
 let move_up t =
-  let row, col = index_to_line_col t.value t.cursor in
+  let row, _ = index_to_line_col t.value t.cursor in
   if row > 0 then (
     let new_row = row - 1 in
     let new_col = min t.preferred_col (line_grapheme_count t.value new_row) in
@@ -473,7 +473,7 @@ let move_up t =
 
 (* Move cursor down one line, preserving column hint *)
 let move_down t =
-  let row, col = index_to_line_col t.value t.cursor in
+  let row, _ = index_to_line_col t.value t.cursor in
   let total_lines = line_count t.value in
   if row < total_lines - 1 then (
     let new_row = row + 1 in
@@ -681,7 +681,7 @@ let mount ?(props = Props.default) (rnode : Renderable.t) =
   in
   let callbacks = callbacks () in
   let initial_cursor = grapheme_count props.value in
-  let row, col = index_to_line_col props.value initial_cursor in
+  let _, initial_col = index_to_line_col props.value initial_cursor in
   let textarea =
     {
       surface;
@@ -690,7 +690,7 @@ let mount ?(props = Props.default) (rnode : Renderable.t) =
       value = props.value;
       graphemes = grapheme_count props.value;
       cursor = initial_cursor;
-      preferred_col = col;
+      preferred_col = initial_col;
       view_offset = { row = 0; col = 0 };
       last_committed = props.value;
       callbacks;

@@ -20,6 +20,7 @@ type tag =
   | Scroll_bar
   | Scroll_box
   | Text_input
+  | Textarea
   | Code
   | Markdown  (** The type of widget this vnode represents. *)
 
@@ -61,6 +62,13 @@ type 'a text_input_spec = {
   text_input_on_submit : (string -> 'a) option;
 }
 
+type 'a textarea_spec = {
+  textarea_props : Mosaic_ui.Textarea.Props.t;
+  textarea_on_input : (string -> 'a) option;
+  textarea_on_change : (string -> 'a) option;
+  textarea_on_submit : (string -> 'a) option;
+}
+
 type 'a scroll_box_spec = {
   scroll_box_props : Mosaic_ui.Scroll_box.Props.t;
   scroll_box_on_scroll : (x:int -> y:int -> 'a) option;
@@ -94,6 +102,7 @@ type 'a spec =
   | Scroll_bar_spec of 'a scroll_bar_spec
   | Scroll_box_spec of 'a scroll_box_spec
   | Text_input_spec of 'a text_input_spec
+  | Textarea_spec of 'a textarea_spec
   | Code_spec of Mosaic_ui.Code.Props.t
   | Markdown_spec of Mosaic_markdown.Props.t
       (** Widget-specific configuration. *)
