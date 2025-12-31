@@ -16,6 +16,7 @@ module Tab_select = Tab_select
 module Scroll_bar = Scroll_bar
 module Scroll_box = Scroll_box
 module Text_input = Text_input
+module Textarea = Textarea
 module Code = Code
 module Text_surface = Text_surface
 
@@ -719,6 +720,58 @@ let input
         Ok (Text_input.node ti)
   in
   make (Renderable ctor) text_input_props []
+
+let textarea
+    (* Node identity *)
+    ?id
+    (* Host props *)
+    ?visible ?z_index ?buffer ?live
+    (* Style properties *)
+    ?display ?box_sizing ?position ?overflow ?scrollbar_width ?inset ?size
+    ?min_size ?max_size ?aspect_ratio ?margin ?padding ?gap
+    (* Alignment *)
+    ?align_items ?align_self ?align_content ?justify_items ?justify_self
+    ?justify_content
+    (* Flexbox *)
+    ?flex_direction ?flex_wrap ?flex_grow ?flex_shrink ?flex_basis
+    (* Grid *)
+    ?grid_template_rows ?grid_template_columns ?grid_auto_rows
+    ?grid_auto_columns ?grid_auto_flow ?grid_template_areas ?grid_row
+    ?grid_column
+    (* Textarea props *)
+    ?background ?text_color ?focused_background ?focused_text_color ?placeholder
+    ?placeholder_color ?cursor_color ?cursor_style ?cursor_blinking ?max_length
+    ?max_rows ?wrap_mode ?value ?autofocus
+    (* Callback *)
+    ?on_mount () : element =
+  let style =
+    Toffee.Style.make ?display ?box_sizing ?position ?overflow ?scrollbar_width
+      ?inset ?size ?min_size ?max_size ?aspect_ratio ?margin ?padding ?gap
+      ?align_items ?align_self ?align_content ?justify_items ?justify_self
+      ?justify_content ?flex_direction ?flex_wrap ?flex_grow ?flex_shrink
+      ?flex_basis ?grid_template_rows ?grid_template_columns ?grid_auto_rows
+      ?grid_auto_columns ?grid_auto_flow ?grid_template_areas ?grid_row
+      ?grid_column ()
+  in
+  let textarea_props =
+    Textarea.Props.make ?background ?text_color ?focused_background
+      ?focused_text_color ?placeholder ?placeholder_color ?cursor_color
+      ?cursor_style ?cursor_blinking ?max_length ?max_rows ?wrap_mode ?value
+      ?autofocus ()
+  in
+  let ctor (renderer : renderer) (textarea_props : Textarea.Props.t) =
+    let id = Option.value id ~default:(Renderer.gen_id renderer) in
+    let host_props =
+      Renderable.Props.make ~id ?visible ?z_index ?buffer ?live ()
+    in
+    match create_node renderer ~id ~host_props ~style () with
+    | Error _ as e -> e
+    | Ok n ->
+        let ta = Textarea.mount ~props:textarea_props n in
+        Option.iter (fun f -> f ta) on_mount;
+        Ok (Textarea.node ta)
+  in
+  make (Renderable ctor) textarea_props []
 
 let code
     (* Node identity *)

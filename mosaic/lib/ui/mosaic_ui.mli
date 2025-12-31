@@ -1001,6 +1001,77 @@ val input :
     - [cursor_blinking]: Enable cursor blinking (default true)
     - [autofocus]: Request focus on mount (default false) *)
 
+val textarea :
+  ?id:string ->
+  ?visible:bool ->
+  ?z_index:int ->
+  ?buffer:Renderable.Props.buffer_mode ->
+  ?live:bool ->
+  ?display:Toffee.Style.display ->
+  ?box_sizing:Toffee.Style.box_sizing ->
+  ?position:Toffee.Style.position ->
+  ?overflow:Toffee.Style.overflow Toffee.Geometry.point ->
+  ?scrollbar_width:float ->
+  ?inset:Toffee.Style.length_percentage_auto Toffee.Geometry.rect ->
+  ?size:Toffee.Style.dimension Toffee.Geometry.size ->
+  ?min_size:Toffee.Style.dimension Toffee.Geometry.size ->
+  ?max_size:Toffee.Style.dimension Toffee.Geometry.size ->
+  ?aspect_ratio:float ->
+  ?margin:Toffee.Style.length_percentage_auto Toffee.Geometry.rect ->
+  ?padding:Toffee.Style.length_percentage Toffee.Geometry.rect ->
+  ?gap:Toffee.Style.length_percentage Toffee.Geometry.size ->
+  ?align_items:Toffee.Style.align_items ->
+  ?align_self:Toffee.Style.align_self ->
+  ?align_content:Toffee.Style.align_content ->
+  ?justify_items:Toffee.Style.justify_items ->
+  ?justify_self:Toffee.Style.justify_self ->
+  ?justify_content:Toffee.Style.justify_content ->
+  ?flex_direction:Toffee.Style.flex_direction ->
+  ?flex_wrap:Toffee.Style.flex_wrap ->
+  ?flex_grow:float ->
+  ?flex_shrink:float ->
+  ?flex_basis:Toffee.Style.dimension ->
+  ?grid_template_rows:Toffee.Style.grid_template_component list ->
+  ?grid_template_columns:Toffee.Style.grid_template_component list ->
+  ?grid_auto_rows:Toffee.Style.track_sizing_function list ->
+  ?grid_auto_columns:Toffee.Style.track_sizing_function list ->
+  ?grid_auto_flow:Toffee.Style.grid_auto_flow ->
+  ?grid_template_areas:Toffee.Style.grid_template_area list ->
+  ?grid_row:Toffee.Style.grid_placement Toffee.Geometry.line ->
+  ?grid_column:Toffee.Style.grid_placement Toffee.Geometry.line ->
+  ?background:Ansi.Color.t ->
+  ?text_color:Ansi.Color.t ->
+  ?focused_background:Ansi.Color.t ->
+  ?focused_text_color:Ansi.Color.t ->
+  ?placeholder:string ->
+  ?placeholder_color:Ansi.Color.t ->
+  ?cursor_color:Ansi.Color.t ->
+  ?cursor_style:Textarea.cursor_style ->
+  ?cursor_blinking:bool ->
+  ?max_length:int ->
+  ?max_rows:int option ->
+  ?wrap_mode:Textarea.wrap_mode ->
+  ?value:string ->
+  ?autofocus:bool ->
+  ?on_mount:(Textarea.t -> unit) ->
+  unit ->
+  element
+(** [textarea ...] creates a multi-line text input element.
+
+    Textareas provide focusable multi-line text fields with cursor navigation,
+    vertical scrolling, and word wrapping. Enter inserts a newline; Ctrl+Enter
+    submits.
+
+    {2 Textarea Props}
+    - [placeholder]: Placeholder text when empty
+    - [value]: Initial text content
+    - [max_length]: Maximum character count
+    - [max_rows]: Maximum number of rows (None = unlimited)
+    - [wrap_mode]: Text wrapping mode (`None, `Char, or `Word)
+    - [cursor_style]: Block, line, or underline cursor
+    - [cursor_blinking]: Enable cursor blinking (default true)
+    - [autofocus]: Request focus on mount (default false) *)
+
 val code :
   ?id:string ->
   ?visible:bool ->
