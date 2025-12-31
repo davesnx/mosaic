@@ -820,6 +820,70 @@ val input :
   'a t
 (** [text_input ()] creates a text input vnode. *)
 
+val textarea :
+  ?id:string ->
+  ?key:string ->
+  ?visible:bool ->
+  ?z_index:int ->
+  ?live:bool ->
+  ?buffer:Mosaic_ui.Renderable.Props.buffer_mode ->
+  ?ref:(Mosaic_ui.Renderable.t -> unit) ->
+  ?on_mouse:(Mosaic_ui.Event.mouse -> 'a) ->
+  ?on_key:(Mosaic_ui.Event.key -> 'a) ->
+  ?on_paste:(Mosaic_ui.Event.paste -> 'a) ->
+  ?display:Toffee.Style.display ->
+  ?box_sizing:Toffee.Style.box_sizing ->
+  ?position:Toffee.Style.position ->
+  ?overflow:Toffee.Style.overflow Toffee.Geometry.point ->
+  ?scrollbar_width:float ->
+  ?inset:Toffee.Style.length_percentage_auto Toffee.Geometry.rect ->
+  ?size:Toffee.Style.dimension Toffee.Geometry.size ->
+  ?min_size:Toffee.Style.dimension Toffee.Geometry.size ->
+  ?max_size:Toffee.Style.dimension Toffee.Geometry.size ->
+  ?aspect_ratio:float ->
+  ?margin:Toffee.Style.length_percentage_auto Toffee.Geometry.rect ->
+  ?padding:Toffee.Style.length_percentage Toffee.Geometry.rect ->
+  ?gap:Toffee.Style.length_percentage Toffee.Geometry.size ->
+  ?align_items:Toffee.Style.align_items ->
+  ?align_self:Toffee.Style.align_self ->
+  ?align_content:Toffee.Style.align_content ->
+  ?justify_items:Toffee.Style.justify_items ->
+  ?justify_self:Toffee.Style.justify_self ->
+  ?justify_content:Toffee.Style.justify_content ->
+  ?flex_direction:Toffee.Style.flex_direction ->
+  ?flex_wrap:Toffee.Style.flex_wrap ->
+  ?flex_grow:float ->
+  ?flex_shrink:float ->
+  ?flex_basis:Toffee.Style.dimension ->
+  ?grid_template_rows:Toffee.Style.grid_template_component list ->
+  ?grid_template_columns:Toffee.Style.grid_template_component list ->
+  ?grid_auto_rows:Toffee.Style.track_sizing_function list ->
+  ?grid_auto_columns:Toffee.Style.track_sizing_function list ->
+  ?grid_auto_flow:Toffee.Style.grid_auto_flow ->
+  ?grid_template_areas:Toffee.Style.grid_template_area list ->
+  ?grid_row:Toffee.Style.grid_placement Toffee.Geometry.line ->
+  ?grid_column:Toffee.Style.grid_placement Toffee.Geometry.line ->
+  ?background:Ansi.Color.t ->
+  ?text_color:Ansi.Color.t ->
+  ?focused_background:Ansi.Color.t ->
+  ?focused_text_color:Ansi.Color.t ->
+  ?placeholder:string ->
+  ?placeholder_color:Ansi.Color.t ->
+  ?cursor_color:Ansi.Color.t ->
+  ?cursor_style:Mosaic_ui.Textarea.cursor_style ->
+  ?cursor_blinking:bool ->
+  ?max_length:int ->
+  ?max_rows:int option ->
+  ?wrap_mode:Mosaic_ui.Textarea.wrap_mode ->
+  ?value:string ->
+  ?autofocus:bool ->
+  ?on_input:(string -> 'a) ->
+  ?on_change:(string -> 'a) ->
+  ?on_submit:(string -> 'a) ->
+  unit ->
+  'a t
+(** [textarea ()] creates a textarea vnode. *)
+
 val code :
   ?id:string ->
   ?key:string ->

@@ -11,6 +11,7 @@ module Tab_select = Mosaic_ui.Tab_select
 module Scroll_bar = Mosaic_ui.Scroll_bar
 module Scroll_box = Mosaic_ui.Scroll_box
 module Text_input = Mosaic_ui.Text_input
+module Textarea = Mosaic_ui.Textarea
 module Code = Mosaic_ui.Code
 module Markdown = Mosaic_markdown
 
@@ -52,6 +53,7 @@ type tag =
   | Scroll_bar
   | Scroll_box
   | Text_input
+  | Textarea
   | Code
   | Markdown
 
@@ -92,6 +94,13 @@ type 'a text_input_spec = {
   text_input_on_submit : (string -> 'a) option;
 }
 
+type 'a textarea_spec = {
+  textarea_props : Textarea.Props.t;
+  textarea_on_input : (string -> 'a) option;
+  textarea_on_change : (string -> 'a) option;
+  textarea_on_submit : (string -> 'a) option;
+}
+
 type 'a scroll_box_spec = {
   scroll_box_props : Scroll_box.Props.t;
   scroll_box_on_scroll : (x:int -> y:int -> 'a) option;
@@ -118,6 +127,7 @@ type 'a spec =
   | Scroll_bar_spec of 'a scroll_bar_spec
   | Scroll_box_spec of 'a scroll_box_spec
   | Text_input_spec of 'a text_input_spec
+  | Textarea_spec of 'a textarea_spec
   | Code_spec of Code.Props.t
   | Markdown_spec of Markdown.Props.t
 
@@ -667,6 +677,59 @@ let input ?id ?key
   in
   Element { tag = Text_input; key; props; children = [] }
 
+let textarea ?id ?key
+    (* Host props *)
+    ?(visible = true) ?(z_index = 0) ?(live = false) ?(buffer = `None)
+    (* Ref *)
+    ?ref
+    (* Handlers *)
+    ?on_mouse ?on_key ?on_paste
+    (* Style properties *)
+    ?display ?box_sizing ?position ?overflow ?scrollbar_width ?inset ?size
+    ?min_size ?max_size ?aspect_ratio ?margin ?padding ?gap
+    (* Alignment *)
+    ?align_items ?align_self ?align_content ?justify_items ?justify_self
+    ?justify_content
+    (* Flexbox *)
+    ?flex_direction ?flex_wrap ?flex_grow ?flex_shrink ?flex_basis
+    (* Grid *)
+    ?grid_template_rows ?grid_template_columns ?grid_auto_rows
+    ?grid_auto_columns ?grid_auto_flow ?grid_template_areas ?grid_row
+    ?grid_column
+    (* Textarea props *)
+    ?background ?text_color ?focused_background ?focused_text_color ?placeholder
+    ?placeholder_color ?cursor_color ?cursor_style ?cursor_blinking ?max_length
+    ?max_rows ?wrap_mode ?value ?autofocus ?on_input ?on_change ?on_submit () =
+  let handlers = { on_mouse; on_key; on_paste } in
+  let style =
+    Toffee.Style.make ?display ?box_sizing ?position ?overflow ?scrollbar_width
+      ?inset ?size ?min_size ?max_size ?aspect_ratio ?margin ?padding ?gap
+      ?align_items ?align_self ?align_content ?justify_items ?justify_self
+      ?justify_content ?flex_direction ?flex_wrap ?flex_grow ?flex_shrink
+      ?flex_basis ?grid_template_rows ?grid_template_columns ?grid_auto_rows
+      ?grid_auto_columns ?grid_auto_flow ?grid_template_areas ?grid_row
+      ?grid_column ()
+  in
+  let textarea_props =
+    Textarea.Props.make ?background ?text_color ?focused_background
+      ?focused_text_color ?placeholder ?placeholder_color ?cursor_color
+      ?cursor_style ?cursor_blinking ?max_length ?max_rows ?wrap_mode ?value
+      ?autofocus ()
+  in
+  let spec =
+    Textarea_spec
+      {
+        textarea_props;
+        textarea_on_input = on_input;
+        textarea_on_change = on_change;
+        textarea_on_submit = on_submit;
+      }
+  in
+  let props =
+    { id; style; visible; z_index; live; buffer; handlers; ref; spec }
+  in
+  Element { tag = Textarea; key; props; children = [] }
+
 let code ?id ?key
     (* Host props *)
     ?(visible = true) ?(z_index = 0) ?(live = false) ?(buffer = `None)
@@ -803,6 +866,17 @@ let map_text_input_spec f spec =
       Option.map (fun cb s -> f (cb s)) spec.text_input_on_submit;
   }
 
+let map_textarea_spec f spec =
+  {
+    spec with
+    textarea_on_input =
+      Option.map (fun cb s -> f (cb s)) spec.textarea_on_input;
+    textarea_on_change =
+      Option.map (fun cb s -> f (cb s)) spec.textarea_on_change;
+    textarea_on_submit =
+      Option.map (fun cb s -> f (cb s)) spec.textarea_on_submit;
+  }
+
 let map_scroll_box_spec f spec =
   {
     spec with
@@ -829,6 +903,7 @@ let map_spec (f : 'a -> 'b) : 'a spec -> 'b spec = function
   | Scroll_bar_spec s -> Scroll_bar_spec (map_scroll_bar_spec f s)
   | Scroll_box_spec s -> Scroll_box_spec (map_scroll_box_spec f s)
   | Text_input_spec s -> Text_input_spec (map_text_input_spec f s)
+  | Textarea_spec s -> Textarea_spec (map_textarea_spec f s)
   | Code_spec s -> Code_spec s
   | Markdown_spec s -> Markdown_spec s
 
@@ -866,6 +941,7 @@ let tag_equal a b =
   | Scroll_bar, Scroll_bar -> true
   | Scroll_box, Scroll_box -> true
   | Text_input, Text_input -> true
+  | Textarea, Textarea -> true
   | Code, Code -> true
   | Markdown, Markdown -> true
   | _ -> false
@@ -981,6 +1057,17 @@ let instantiate_element (renderer : Renderer.t) (props : 'a props) :
                 ?on_input:(map_cb spec.text_input_on_input)
                 ?on_change:(map_cb spec.text_input_on_change)
                 ?on_submit:(map_cb spec.text_input_on_submit)
+                ();
+              Ok node
+          | Textarea_spec spec ->
+              let ta = Textarea.mount ~props:spec.textarea_props node in
+              let map_cb opt =
+                Option.map (fun cb -> fun s -> ignore (cb s)) opt
+              in
+              Textarea.set_callbacks ta
+                ?on_input:(map_cb spec.textarea_on_input)
+                ?on_change:(map_cb spec.textarea_on_change)
+                ?on_submit:(map_cb spec.textarea_on_submit)
                 ();
               Ok node
           | Code_spec spec ->
