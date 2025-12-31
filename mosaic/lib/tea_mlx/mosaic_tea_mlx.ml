@@ -51,7 +51,7 @@ let text ?id ?key ?visible ?z_index ?live ?buffer ?ref ?on_mouse ?on_key
     ?flex_direction ?flex_wrap ?flex_grow ?flex_shrink ?flex_basis
     ?grid_template_rows ?grid_template_columns ?grid_auto_rows
     ?grid_auto_columns ?grid_auto_flow ?grid_template_areas ?grid_row
-    ?grid_column ?text_style ?wrap_mode ?tab_indicator ?tab_indicator_color
+    ?grid_column ?style ?wrap_mode ?tab_indicator ?tab_indicator_color
     ?selection_bg ?selection_fg ?selectable ?(children = "") () =
   Mosaic_tea.text ?id ?key ?visible ?z_index ?live ?buffer ?ref ?on_mouse
     ?on_key ?on_paste ?display ?box_sizing ?position ?overflow ?scrollbar_width
@@ -60,7 +60,7 @@ let text ?id ?key ?visible ?z_index ?live ?buffer ?ref ?on_mouse ?on_key
     ?justify_content ?flex_direction ?flex_wrap ?flex_grow ?flex_shrink
     ?flex_basis ?grid_template_rows ?grid_template_columns ?grid_auto_rows
     ?grid_auto_columns ?grid_auto_flow ?grid_template_areas ?grid_row
-    ?grid_column ?text_style ?wrap_mode ?tab_indicator ?tab_indicator_color
+    ?grid_column ?style ?wrap_mode ?tab_indicator ?tab_indicator_color
     ?selection_bg ?selection_fg ?selectable children
 
 let code ?id ?key ?visible ?z_index ?live ?buffer ?ref ?on_mouse ?on_key
